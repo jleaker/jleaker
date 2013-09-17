@@ -1,0 +1,54 @@
+<project name="all_java" default="dist" basedir=".">
+
+	<property name="src" value="src/java" />
+	<property name="dest" value="build" />
+	<property name="dist" value="dist" />
+	<target name="make">
+		<echo message="building ${module}" />
+
+		<mkdir dir="${dist}" />
+		<mkdir dir="${dest}" />
+		<!-- Compile the sources -->
+		<javac srcdir="${module}/${src}" destdir="${dest}" classpath="${classpath}" debug="on" excludes="${excl}" />
+	</target>
+	
+	<target name="dist" depends="build">
+	</target>
+	<target name="dist-no-dep" depends="build_project">
+	</target>
+
+	<!--target name="build" depends="build_common"-->
+	<target name="build" depends="build_project">
+	</target>
+	<target name="build_project">
+		<!-- Compile jleaker -->
+		<antcall target="make">
+			<param name="module" value=".." />
+			<param name="classpath" value="" />
+		</antcall>
+		
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist}" />
+
+		<!-- pack storage.jar -->
+		<echo message="packaging jleaker.jar" />
+		<jar destfile="${dist}/jleaker.jar" filesonly="true">
+			<zipfileset dir="${dest}" />
+		</jar>
+		
+	</target>
+
+	<target name="clean">
+		<!-- Delete the ${dist} directory tree -->
+		<delete dir="${dist}" />
+	</target>
+
+	<target name="very_clean">
+
+		<delete dir="../jleaker/${dist}" />
+		<delete dir="${dist}" />
+		<delete dir="${dest}" />
+	</target>
+
+
+</project>

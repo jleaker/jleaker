@@ -1,0 +1,27 @@
+#!/bin/sh
+JAVA_HOME=/usr/intel/pkgs/java/1.6.0.31-64
+
+myDir=`/usr/bin/dirname $0`
+myDir=`cd $myDir && pwd -P 2>/dev/null`
+
+jarBaseName=jleaker.jar
+soBaseName='libjleaker-<ARCH>.so'
+jar=$myDir/../ant/dist/$jarBaseName
+if [ ! -e $jar ]
+then
+	jar=$myDir/$jarBaseName
+fi
+lib=$myDir/../src/cpp/bin/$soBaseName
+conf=$myDir/../conf
+files=`echo $lib | sed 's/<ARCH>/*/'`
+/bin/ls $files >/dev/null 2>&1
+if [ $? -ne 0 ]
+then
+	lib=$myDir/$soBaseName
+fi
+if [ ! -e $conf ]
+then
+	conf=$myDir/conf
+fi
+ 
+$JAVA_HOME/jre/bin/java -cp $jar:$JAVA_HOME/lib/tools.jar com.intel.swiss.sws.netstar.application.jleaker.main.JLeaker --lib-path $lib --conf-path $conf $*
